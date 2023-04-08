@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/services/gcs/backend.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/gcs/backend.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -687,6 +687,33 @@
 <a href="#687" id="687">687</a>
 <a href="#688" id="688">688</a>
 <a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
 </pre><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -744,6 +771,7 @@
 /// - [x] write
 /// - [x] list
 /// - [x] scan
+/// - [x] copy
 /// - [ ] presign
 /// - [ ] blocking
 ///
@@ -941,9 +969,11 @@
         <span class="comment">// Handle endpoint and bucket name
         </span><span class="kw">let </span>bucket = <span class="kw">match </span><span class="self">self</span>.bucket.is_empty() {
             <span class="bool-val">false </span>=&gt; <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.bucket),
-            <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;bucket is empty&quot;</span>)
-                .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Gcs)),
+            <span class="bool-val">true </span>=&gt; <span class="prelude-val">Err</span>(
+                Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;The bucket is misconfigured&quot;</span>)
+                    .with_operation(<span class="string">&quot;Builder::build&quot;</span>)
+                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Gcs),
+            ),
         }<span class="question-mark">?</span>;
 
         <span class="comment">// TODO: server side encryption
@@ -1047,7 +1077,7 @@
         am.set_scheme(Scheme::Gcs)
             .set_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root)
             .set_name(<span class="kw-2">&amp;</span><span class="self">self</span>.bucket)
-            .set_capabilities(Read | Write | List | Scan)
+            .set_capabilities(Read | Write | List | Scan | Copy)
             .set_hints(ReadStreamable);
         am
     }
@@ -1090,6 +1120,30 @@
             RpWrite::default(),
             GcsWriter::new(<span class="self">self</span>.clone(), args, path.to_string()),
         ))
+    }
+
+    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">let </span>source = percent_encode_path(<span class="kw-2">&amp;</span>build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from.trim_end_matches(<span class="string">&#39;/&#39;</span>)));
+        <span class="kw">let </span>dest = percent_encode_path(<span class="kw-2">&amp;</span>build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to.trim_end_matches(<span class="string">&#39;/&#39;</span>)));
+        <span class="kw">let </span>req_uri = <span class="macro">format!</span>(
+            <span class="string">&quot;{}/storage/v1/b/{}/o/{}/copyTo/b/{}/o/{}&quot;</span>,
+            <span class="self">self</span>.endpoint, <span class="self">self</span>.bucket, source, <span class="self">self</span>.bucket, dest
+        );
+
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::post(req_uri)
+            .body(AsyncBody::Empty)
+            .map_err(new_request_build_error)<span class="question-mark">?</span>;
+
+        <span class="self">self</span>.signer.sign(<span class="kw-2">&amp;mut </span>req).map_err(new_request_sign_error)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.client.send_async(req).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">if </span>!resp.status().is_success() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
+        }
+        resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(RpCopy::default())
     }
 
     <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
@@ -1377,4 +1431,4 @@
     }
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0 (2c8cc3432 2023-03-06)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.2 (9eb3afe9e 2023-03-27)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
