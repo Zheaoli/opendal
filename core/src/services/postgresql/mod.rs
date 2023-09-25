@@ -16,4 +16,5 @@
 // under the License.
 
 mod backend;
+mod connection;
 pub use backend::PostgresqlBuilder as Postgresql;
