@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/webdav/backend.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../opendal/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/services/webdav/backend.rs`."><title>backend.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (25f8d01fd 2024-01-18)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -656,35 +658,28 @@
 <a href="#656" id="656">656</a>
 <a href="#657" id="657">657</a>
 <a href="#658" id="658">658</a>
-<a href="#659" id="659">659</a>
-<a href="#660" id="660">660</a>
-<a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-</pre><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
+</pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
 
 </span><span class="kw">use </span>std::collections::HashMap;
+<span class="kw">use </span>std::collections::VecDeque;
 <span class="kw">use </span>std::fmt::Debug;
 <span class="kw">use </span>std::fmt::Formatter;
+<span class="kw">use </span>std::str::FromStr;
 
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>bytes::Buf;
@@ -694,82 +689,59 @@
 <span class="kw">use </span>http::Response;
 <span class="kw">use </span>http::StatusCode;
 <span class="kw">use </span>log::debug;
+<span class="kw">use </span>serde::Deserialize;
 
 <span class="kw">use </span><span class="kw">super</span>::error::parse_error;
-<span class="kw">use </span><span class="kw">super</span>::list_response::Multistatus;
-<span class="kw">use </span><span class="kw">super</span>::pager::WebdavPager;
+<span class="kw">use </span><span class="kw">super</span>::lister::Multistatus;
+<span class="kw">use </span><span class="kw">super</span>::lister::WebdavLister;
 <span class="kw">use </span><span class="kw">super</span>::writer::WebdavWriter;
-<span class="kw">use </span><span class="kw">crate</span>::ops::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
+<span class="doccomment">/// Config for [WebDAV](https://datatracker.ietf.org/doc/html/rfc4918) backend support.
+</span><span class="attr">#[derive(Default, Deserialize)]
+#[serde(default)]
+#[non_exhaustive]
+</span><span class="kw">pub struct </span>WebdavConfig {
+    <span class="doccomment">/// endpoint of this backend
+    </span><span class="kw">pub </span>endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// username of this backend
+    </span><span class="kw">pub </span>username: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// password of this backend
+    </span><span class="kw">pub </span>password: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// token of this backend
+    </span><span class="kw">pub </span>token: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    <span class="doccomment">/// root of this backend
+    </span><span class="kw">pub </span>root: <span class="prelude-ty">Option</span>&lt;String&gt;,
+}
+
+<span class="kw">impl </span>Debug <span class="kw">for </span>WebdavConfig {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">"WebdavConfig"</span>);
+
+        d.field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">"username"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.username)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
+
+        d.finish_non_exhaustive()
+    }
+}
+
 <span class="doccomment">/// [WebDAV](https://datatracker.ietf.org/doc/html/rfc4918) backend support.
-///
-/// # Capabilities
-///
-/// This service can be used to:
-///
-/// - [x] read
-/// - [x] write
-/// - [x] copy
-/// - [x] rename
-/// - [x] list
-/// - [ ] ~~scan~~
-/// - [ ] ~~presign~~
-/// - [ ] blocking
-///
-/// # Notes
-///
-/// Bazel Remote Caching and Ccache HTTP Storage is also part of this service.
-/// Users can use `webdav` to connect those services.
-///
-/// # Configuration
-///
-/// - `endpoint`: set the endpoint for webdav
-/// - `root`: Set the work directory for backend
-///
-/// You can refer to [`WebdavBuilder`]&#39;s docs for more information
-///
-/// # Example
-///
-/// ## Via Builder
-///
-/// ```no_run
-/// use anyhow::Result;
-/// use opendal::services::Webdav;
-/// use opendal::Operator;
-///
-/// #[tokio::main]
-/// async fn main() -&gt; Result&lt;()&gt; {
-///     // create backend builder
-///     let mut builder = Webdav::default();
-///
-///     builder
-///         .endpoint(&quot;127.0.0.1&quot;)
-///         .username(&quot;xxx&quot;)
-///         .password(&quot;xxx&quot;);
-///
-///     let op: Operator = Operator::new(builder)?.finish();
-///     Ok(())
-/// }
-/// ```
-</span><span class="attr">#[derive(Default)]
+</span><span class="attr">#[doc = <span class="macro">include_str!</span>(<span class="string">"docs.md"</span>)]
+#[derive(Default)]
 </span><span class="kw">pub struct </span>WebdavBuilder {
-    endpoint: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    username: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    password: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    token: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    root: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    config: WebdavConfig,
     http_client: <span class="prelude-ty">Option</span>&lt;HttpClient&gt;,
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>WebdavBuilder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        <span class="kw">let </span><span class="kw-2">mut </span>de = f.debug_struct(<span class="string">&quot;Builder&quot;</span>);
-        de.field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint);
-        de.field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root);
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">let </span><span class="kw-2">mut </span>d = f.debug_struct(<span class="string">"WebdavBuilder"</span>);
 
-        de.finish()
+        d.field(<span class="string">"config"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.config);
+
+        d.finish_non_exhaustive()
     }
 }
 
@@ -778,7 +750,7 @@
     ///
     /// For example: `https://example.com`
     </span><span class="kw">pub fn </span>endpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, endpoint: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.endpoint = <span class="kw">if </span>endpoint.is_empty() {
+        <span class="self">self</span>.config.endpoint = <span class="kw">if </span>endpoint.is_empty() {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{
             <span class="prelude-val">Some</span>(endpoint.to_string())
@@ -787,12 +759,12 @@
         <span class="self">self
     </span>}
 
-    <span class="doccomment">/// set the password for Webdav
+    <span class="doccomment">/// set the username for Webdav
     ///
-    /// default: no password
+    /// default: no username
     </span><span class="kw">pub fn </span>username(<span class="kw-2">&amp;mut </span><span class="self">self</span>, username: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!username.is_empty() {
-            <span class="self">self</span>.username = <span class="prelude-val">Some</span>(username.to_owned());
+            <span class="self">self</span>.config.username = <span class="prelude-val">Some</span>(username.to_owned());
         }
         <span class="self">self
     </span>}
@@ -802,7 +774,7 @@
     /// default: no password
     </span><span class="kw">pub fn </span>password(<span class="kw-2">&amp;mut </span><span class="self">self</span>, password: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!password.is_empty() {
-            <span class="self">self</span>.password = <span class="prelude-val">Some</span>(password.to_owned());
+            <span class="self">self</span>.config.password = <span class="prelude-val">Some</span>(password.to_owned());
         }
         <span class="self">self
     </span>}
@@ -812,14 +784,14 @@
     /// default: no access token
     </span><span class="kw">pub fn </span>token(<span class="kw-2">&amp;mut </span><span class="self">self</span>, token: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="kw">if </span>!token.is_empty() {
-            <span class="self">self</span>.token = <span class="prelude-val">Some</span>(token.to_owned());
+            <span class="self">self</span>.config.token = <span class="prelude-val">Some</span>(token.to_owned());
         }
         <span class="self">self
     </span>}
 
     <span class="doccomment">/// Set root path of http backend.
     </span><span class="kw">pub fn </span>root(<span class="kw-2">&amp;mut </span><span class="self">self</span>, root: <span class="kw-2">&amp;</span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.root = <span class="kw">if </span>root.is_empty() {
+        <span class="self">self</span>.config.root = <span class="kw">if </span>root.is_empty() {
             <span class="prelude-val">None
         </span>} <span class="kw">else </span>{
             <span class="prelude-val">Some</span>(root.to_string())
@@ -832,7 +804,7 @@
     ///
     /// # Notes
     ///
-    /// This API is part of OpenDAL&#39;s Raw API. `HttpClient` could be changed
+    /// This API is part of OpenDAL's Raw API. `HttpClient` could be changed
     /// during minor updates.
     </span><span class="kw">pub fn </span>http_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>, client: HttpClient) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.http_client = <span class="prelude-val">Some</span>(client);
@@ -847,52 +819,62 @@
     <span class="kw">fn </span>from_map(map: HashMap&lt;String, String&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span><span class="kw-2">mut </span>builder = WebdavBuilder::default();
 
-        map.get(<span class="string">&quot;root&quot;</span>).map(|v| builder.root(v));
-        map.get(<span class="string">&quot;endpoint&quot;</span>).map(|v| builder.endpoint(v));
-        map.get(<span class="string">&quot;username&quot;</span>).map(|v| builder.username(v));
-        map.get(<span class="string">&quot;password&quot;</span>).map(|v| builder.password(v));
-        map.get(<span class="string">&quot;token&quot;</span>).map(|v| builder.token(v));
+        map.get(<span class="string">"root"</span>).map(|v| builder.root(v));
+        map.get(<span class="string">"endpoint"</span>).map(|v| builder.endpoint(v));
+        map.get(<span class="string">"username"</span>).map(|v| builder.username(v));
+        map.get(<span class="string">"password"</span>).map(|v| builder.password(v));
+        map.get(<span class="string">"token"</span>).map(|v| builder.token(v));
 
         builder
     }
 
     <span class="kw">fn </span>build(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Accessor&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build started: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build started: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
 
-        <span class="kw">let </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.endpoint {
+        <span class="kw">let </span>endpoint = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.config.endpoint {
             <span class="prelude-val">Some</span>(v) =&gt; v,
             <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">&quot;endpoint is empty&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Webdav))
+                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint is empty"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Webdav));
             }
         };
 
-        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root.take().unwrap_or_default());
-        <span class="macro">debug!</span>(<span class="string">&quot;backend use root {}&quot;</span>, root);
+        <span class="kw">let </span>uri = http::Uri::from_str(endpoint).map_err(|err| {
+            Error::new(ErrorKind::ConfigInvalid, <span class="string">"endpoint is invalid"</span>)
+                .set_source(err)
+                .with_context(<span class="string">"service"</span>, Scheme::Webdav)
+        })<span class="question-mark">?</span>;
+        <span class="comment">// Some webdav server may have base dir like `/remote.php/webdav/`
+        // returned in the `href`.
+        </span><span class="kw">let </span>base_dir = uri.path().trim_end_matches(<span class="string">'/'</span>);
+
+        <span class="kw">let </span>root = normalize_root(<span class="kw-2">&amp;</span><span class="self">self</span>.config.root.take().unwrap_or_default());
+        <span class="macro">debug!</span>(<span class="string">"backend use root {}"</span>, root);
 
         <span class="kw">let </span>client = <span class="kw">if let </span><span class="prelude-val">Some</span>(client) = <span class="self">self</span>.http_client.take() {
             client
         } <span class="kw">else </span>{
             HttpClient::new().map_err(|err| {
-                err.with_operation(<span class="string">&quot;Builder::build&quot;</span>)
-                    .with_context(<span class="string">&quot;service&quot;</span>, Scheme::Webdav)
+                err.with_operation(<span class="string">"Builder::build"</span>)
+                    .with_context(<span class="string">"service"</span>, Scheme::Webdav)
             })<span class="question-mark">?
         </span>};
 
         <span class="kw">let </span><span class="kw-2">mut </span>auth = <span class="prelude-val">None</span>;
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(username) = <span class="kw-2">&amp;</span><span class="self">self</span>.username {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(username) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.username {
             auth = <span class="prelude-val">Some</span>(format_authorization_by_basic(
                 username,
-                <span class="self">self</span>.password.as_deref().unwrap_or_default(),
+                <span class="self">self</span>.config.password.as_deref().unwrap_or_default(),
             )<span class="question-mark">?</span>);
         }
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(token) = <span class="kw-2">&amp;</span><span class="self">self</span>.token {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(token) = <span class="kw-2">&amp;</span><span class="self">self</span>.config.token {
             auth = <span class="prelude-val">Some</span>(format_authorization_by_bearer(token)<span class="question-mark">?</span>)
         }
 
-        <span class="macro">debug!</span>(<span class="string">&quot;backend build finished: {:?}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
+        <span class="macro">debug!</span>(<span class="string">"backend build finished: {:?}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>);
         <span class="prelude-val">Ok</span>(WebdavBackend {
             endpoint: endpoint.to_string(),
+            base_dir: base_dir.to_string(),
             authorization: auth,
             root,
             client,
@@ -904,6 +886,7 @@
 </span><span class="attr">#[derive(Clone)]
 </span><span class="kw">pub struct </span>WebdavBackend {
     endpoint: String,
+    base_dir: String,
     root: String,
     client: HttpClient,
 
@@ -911,11 +894,11 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>WebdavBackend {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;Backend&quot;</span>)
-            .field(<span class="string">&quot;endpoint&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
-            .field(<span class="string">&quot;root&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .field(<span class="string">&quot;client&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.client)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"Backend"</span>)
+            .field(<span class="string">"endpoint"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.endpoint)
+            .field(<span class="string">"root"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.root)
+            .field(<span class="string">"client"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.client)
             .finish()
     }
 }
@@ -923,63 +906,162 @@
 <span class="attr">#[async_trait]
 </span><span class="kw">impl </span>Accessor <span class="kw">for </span>WebdavBackend {
     <span class="kw">type </span>Reader = IncomingAsyncBody;
+    <span class="kw">type </span>Writer = oio::OneShotWriter&lt;WebdavWriter&gt;;
+    <span class="kw">type </span>Lister = <span class="prelude-ty">Option</span>&lt;oio::PageLister&lt;WebdavLister&gt;&gt;;
     <span class="kw">type </span>BlockingReader = ();
-    <span class="kw">type </span>Writer = WebdavWriter;
     <span class="kw">type </span>BlockingWriter = ();
-    <span class="kw">type </span>Pager = WebdavPager;
-    <span class="kw">type </span>BlockingPager = ();
+    <span class="kw">type </span>BlockingLister = ();
 
     <span class="kw">fn </span>info(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; AccessorInfo {
         <span class="kw">let </span><span class="kw-2">mut </span>ma = AccessorInfo::default();
         ma.set_scheme(Scheme::Webdav)
             .set_root(<span class="kw-2">&amp;</span><span class="self">self</span>.root)
-            .set_capabilities(
-                AccessorCapability::Read
-                    | AccessorCapability::Write
-                    | AccessorCapability::Copy
-                    | AccessorCapability::Rename
-                    | AccessorCapability::List,
-            )
-            .set_hints(AccessorHint::ReadStreamable);
+            .set_native_capability(Capability {
+                stat: <span class="bool-val">true</span>,
+
+                read: <span class="bool-val">true</span>,
+                read_can_next: <span class="bool-val">true</span>,
+                read_with_range: <span class="bool-val">true</span>,
+
+                write: <span class="bool-val">true</span>,
+                write_can_empty: <span class="bool-val">true</span>,
+
+                create_dir: <span class="bool-val">true</span>,
+                delete: <span class="bool-val">true</span>,
+
+                copy: <span class="bool-val">true</span>,
+
+                rename: <span class="bool-val">true</span>,
+
+                list: <span class="bool-val">true</span>,
+
+                ..Default::default()
+            });
 
         ma
     }
 
-    <span class="kw">async fn </span>create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
+    <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="self">self</span>.ensure_parent_path(path).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="self">self</span>.create_dir_internal(path).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="kw">let </span>abs_path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-        <span class="self">self</span>.create_internal(<span class="kw-2">&amp;</span>abs_path).<span class="kw">await
-    </span>}
+        <span class="prelude-val">Ok</span>(RpCreateDir::default())
+    }
 
-    <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_get(path, args.range()).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>header_map = HeaderMap::new();
+        <span class="comment">// not include children
+        </span>header_map.insert(<span class="string">"Depth"</span>, <span class="string">"0"</span>.parse().unwrap());
+        header_map.insert(header::ACCEPT, <span class="string">"application/xml"</span>.parse().unwrap());
+
+        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_propfind(path, <span class="prelude-val">Some</span>(header_map)).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>status = resp.status();
 
+        <span class="kw">if </span>!status.is_success() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>);
+        }
+
+        <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>result: Multistatus =
+            quick_xml::de::from_reader(bs.reader()).map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
+        <span class="kw">let </span>item = result
+            .response
+            .first()
+            .ok_or_else(|| {
+                Error::new(
+                    ErrorKind::Unexpected,
+                    <span class="string">"Failed getting item stat: bad response"</span>,
+                )
+            })<span class="question-mark">?
+            </span>.parse_into_metadata()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(RpStat::new(item))
+    }
+
+    <span class="kw">async fn </span>read(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;(RpRead, <span class="self">Self</span>::Reader)&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_get(path, args).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>status = resp.status();
         <span class="kw">match </span>status {
             StatusCode::OK | StatusCode::PARTIAL_CONTENT =&gt; {
-                <span class="kw">let </span>meta = parse_into_metadata(path, resp.headers())<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((RpRead::with_metadata(meta), resp.into_body()))
+                <span class="kw">let </span>size = parse_content_length(resp.headers())<span class="question-mark">?</span>;
+                <span class="kw">let </span>range = parse_content_range(resp.headers())<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((
+                    RpRead::new().with_size(size).with_range(range),
+                    resp.into_body(),
+                ))
+            }
+            StatusCode::RANGE_NOT_SATISFIABLE =&gt; {
+                resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((RpRead::new().with_size(<span class="prelude-val">Some</span>(<span class="number">0</span>)), IncomingAsyncBody::empty()))
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
 
     <span class="kw">async fn </span>write(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpWrite) -&gt; <span class="prelude-ty">Result</span>&lt;(RpWrite, <span class="self">Self</span>::Writer)&gt; {
-        <span class="kw">if </span>args.append() {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
-                ErrorKind::Unsupported,
-                <span class="string">&quot;append write is not supported&quot;</span>,
-            ));
-        }
+        <span class="self">self</span>.ensure_parent_path(path).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="prelude-val">Ok</span>((RpWrite::default(), WebdavWriter::new(<span class="self">self</span>.clone(), args, p)))
+        <span class="prelude-val">Ok</span>((
+            RpWrite::default(),
+            oio::OneShotWriter::new(WebdavWriter::new(<span class="self">self</span>.clone(), args, p)),
+        ))
     }
 
-    <span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+    <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_delete(path).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::NO_CONTENT | StatusCode::NOT_FOUND =&gt; <span class="prelude-val">Ok</span>(RpDelete::default()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
+    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
+        <span class="kw">if </span>args.recursive() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::new(
+                ErrorKind::Unsupported,
+                <span class="string">"webdav doesn't support list with recursive"</span>,
+            ));
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>header_map = HeaderMap::new();
+        header_map.insert(<span class="string">"Depth"</span>, <span class="string">"1"</span>.parse().unwrap());
+        header_map.insert(header::CONTENT_TYPE, <span class="string">"application/xml"</span>.parse().unwrap());
+        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_propfind(path, <span class="prelude-val">Some</span>(header_map)).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>status = resp.status();
+
+        <span class="kw">match </span>status {
+            StatusCode::OK | StatusCode::MULTI_STATUS =&gt; {
+                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>result: Multistatus =
+                    quick_xml::de::from_reader(bs.reader()).map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
+
+                <span class="kw">let </span>l = WebdavLister::new(<span class="kw-2">&amp;</span><span class="self">self</span>.base_dir, <span class="kw-2">&amp;</span><span class="self">self</span>.root, path, result);
+
+                <span class="prelude-val">Ok</span>((RpList::default(), <span class="prelude-val">Some</span>(oio::PageLister::new(l))))
+            }
+            StatusCode::NOT_FOUND <span class="kw">if </span>path.ends_with(<span class="string">'/'</span>) =&gt; <span class="prelude-val">Ok</span>((RpList::default(), <span class="prelude-val">None</span>)),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+        }
+    }
+
+    <span class="doccomment">/// # Notes
+    ///
+    /// There is a strange dead lock issues when copying a non-exist file, so we will check
+    /// if the source exists first.
+    ///
+    /// For example: &lt;https://github.com/apache/opendal/pull/2809&gt;
+    </span><span class="kw">async fn </span>copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str, _args: OpCopy) -&gt; <span class="prelude-ty">Result</span>&lt;RpCopy&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.stat(from, OpStat::default()).<span class="kw">await </span>{
+            <span class="kw">if </span>err.kind() == ErrorKind::NotFound {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(err);
+            }
+        }
+
         <span class="self">self</span>.ensure_parent_path(to).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>resp = <span class="self">self</span>.webdav_copy(from, to).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -1004,102 +1086,12 @@
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
-
-    <span class="kw">async fn </span>stat(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpStat) -&gt; <span class="prelude-ty">Result</span>&lt;RpStat&gt; {
-        <span class="comment">// Stat root always returns a DIR.
-        </span><span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)));
-        }
-
-        <span class="kw">let </span><span class="kw-2">mut </span>header_map = HeaderMap::new();
-        <span class="comment">// not include children
-        </span>header_map.insert(<span class="string">&quot;Depth&quot;</span>, <span class="string">&quot;0&quot;</span>.parse().unwrap());
-        header_map.insert(header::ACCEPT, <span class="string">&quot;application/xml&quot;</span>.parse().unwrap());
-
-        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_propfind(path, <span class="prelude-val">Some</span>(header_map)).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">if </span>!status.is_success() {
-            <span class="kw">match </span>status {
-                <span class="comment">// HTTP Server like nginx could return FORBIDDEN if auto-index
-                // is not enabled, we should ignore them.
-                </span>StatusCode::NOT_FOUND | StatusCode::FORBIDDEN <span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) =&gt; {
-                    <span class="prelude-val">Ok</span>(RpStat::new(Metadata::new(EntryMode::DIR)))
-                }
-                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-            }
-        } <span class="kw">else </span>{
-            <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="kw">let </span>result: Multistatus =
-                quick_xml::de::from_reader(bs.reader()).map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
-            <span class="kw">let </span>item = result
-                .response
-                .get(<span class="number">0</span>)
-                .ok_or_else(|| {
-                    Error::new(
-                        ErrorKind::Unexpected,
-                        <span class="string">&quot;Failed getting item stat: bad response&quot;</span>,
-                    )
-                })<span class="question-mark">?
-                </span>.parse_into_metadata()<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(RpStat::new(item))
-        }
-    }
-
-    <span class="kw">async fn </span>delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpDelete) -&gt; <span class="prelude-ty">Result</span>&lt;RpDelete&gt; {
-        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_delete(path).<span class="kw">await</span><span class="question-mark">?</span>;
-
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::NO_CONTENT | StatusCode::NOT_FOUND =&gt; <span class="prelude-val">Ok</span>(RpDelete::default()),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
-
-    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, <span class="kw">_</span>: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>header_map = HeaderMap::new();
-        header_map.insert(<span class="string">&quot;Depth&quot;</span>, <span class="string">&quot;1&quot;</span>.parse().unwrap());
-        header_map.insert(header::CONTENT_TYPE, <span class="string">&quot;application/xml&quot;</span>.parse().unwrap());
-        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_propfind(path, <span class="prelude-val">Some</span>(header_map)).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>status = resp.status();
-
-        <span class="kw">match </span>status {
-            StatusCode::OK | StatusCode::MULTI_STATUS =&gt; {
-                <span class="kw">let </span>bs = resp.into_body().bytes().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="kw">let </span>result: Multistatus =
-                    quick_xml::de::from_reader(bs.reader()).map_err(new_xml_deserialize_error)<span class="question-mark">?</span>;
-
-                <span class="prelude-val">Ok</span>((
-                    RpList::default(),
-                    WebdavPager::new(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path, result),
-                ))
-            }
-            StatusCode::NOT_FOUND <span class="kw">if </span>path.ends_with(<span class="string">&#39;/&#39;</span>) =&gt; <span class="prelude-val">Ok</span>((
-                RpList::default(),
-                WebdavPager::new(
-                    <span class="kw-2">&amp;</span><span class="self">self</span>.root,
-                    path,
-                    Multistatus {
-                        response: Vec::new(),
-                    },
-                ),
-            )),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
-        }
-    }
 }
 
 <span class="kw">impl </span>WebdavBackend {
-    <span class="kw">async fn </span>webdav_get(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        path: <span class="kw-2">&amp;</span>str,
-        range: BytesRange,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
+    <span class="kw">async fn </span>webdav_get(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpRead) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_rooted_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url: String = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::get(<span class="kw-2">&amp;</span>url);
 
@@ -1107,6 +1099,7 @@
             req = req.header(header::AUTHORIZATION, auth.clone())
         }
 
+        <span class="kw">let </span>range = args.range();
         <span class="kw">if </span>!range.is_full() {
             req = req.header(header::RANGE, range.to_header());
         }
@@ -1115,18 +1108,17 @@
             .body(AsyncBody::Empty)
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
+        <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
     <span class="kw">pub async fn </span>webdav_put(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         abs_path: <span class="kw-2">&amp;</span>str,
-        size: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        content_disposition: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+        size: <span class="prelude-ty">Option</span>&lt;u64&gt;,
+        args: <span class="kw-2">&amp;</span>OpWrite,
         body: AsyncBody,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(abs_path));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(abs_path));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::put(<span class="kw-2">&amp;</span>url);
 
@@ -1138,45 +1130,35 @@
             req = req.header(header::CONTENT_LENGTH, size)
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = args.content_type() {
             req = req.header(header::CONTENT_TYPE, mime)
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(cd) = content_disposition {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(cd) = args.content_disposition() {
             req = req.header(header::CONTENT_DISPOSITION, cd)
         }
 
         <span class="comment">// Set body
         </span><span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
+        <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
-    <span class="kw">async fn </span>webdav_mkcol(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        abs_path: <span class="kw-2">&amp;</span>str,
-        content_type: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        content_disposition: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-        body: AsyncBody,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(abs_path));
+    <span class="kw">async fn </span>webdav_mkcol(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
+        <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">&quot;MKCOL&quot;</span>).uri(<span class="kw-2">&amp;</span>url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">"MKCOL"</span>).uri(<span class="kw-2">&amp;</span>url);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(auth) = <span class="kw-2">&amp;</span><span class="self">self</span>.authorization {
             req = req.header(header::AUTHORIZATION, auth);
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content_type {
-            req = req.header(header::CONTENT_TYPE, mime)
-        }
+        <span class="kw">let </span>req = req
+            .body(AsyncBody::Empty)
+            .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(cd) = content_disposition {
-            req = req.header(header::CONTENT_DISPOSITION, cd)
-        }
-
-        <span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
+        <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
     <span class="kw">async fn </span>webdav_propfind(
@@ -1186,8 +1168,8 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
-        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">&quot;PROPFIND&quot;</span>).uri(<span class="kw-2">&amp;</span>url);
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">"PROPFIND"</span>).uri(<span class="kw-2">&amp;</span>url);
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(auth) = <span class="kw-2">&amp;</span><span class="self">self</span>.authorization {
             req = req.header(header::AUTHORIZATION, auth);
@@ -1203,25 +1185,25 @@
         <span class="comment">// rfc4918 9.1: retrieve all properties define in specification
         </span><span class="kw">let </span>body;
         {
-            req = req.header(header::CONTENT_TYPE, <span class="string">&quot;application/xml&quot;</span>);
+            req = req.header(header::CONTENT_TYPE, <span class="string">"application/xml"</span>);
             <span class="comment">// XML body must start without a new line. Otherwise, the server will panic: `xmlParseChunk() failed`
-            </span><span class="kw">let </span>all_prop_xml_body = <span class="string">r#&quot;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-            &lt;D:propfind xmlns:D=&quot;DAV:&quot;&gt;
+            </span><span class="kw">let </span>all_prop_xml_body = <span class="string">r#"&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+            &lt;D:propfind xmlns:D="DAV:"&gt;
                 &lt;D:allprop/&gt;
             &lt;/D:propfind&gt;
-        &quot;#</span>;
+        "#</span>;
             body = AsyncBody::Bytes(bytes::Bytes::from(all_prop_xml_body));
         }
 
         <span class="kw">let </span>req = req.body(body).map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
+        <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
     <span class="kw">async fn </span>webdav_delete(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>p = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
 
-        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
+        <span class="kw">let </span>url = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>p));
 
         <span class="kw">let </span><span class="kw-2">mut </span>req = Request::delete(<span class="kw-2">&amp;</span>url);
 
@@ -1233,104 +1215,105 @@
             .body(AsyncBody::Empty)
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
+        <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
     <span class="kw">async fn </span>webdav_copy(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>source = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from);
         <span class="kw">let </span>target = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
 
-        <span class="kw">let </span>source = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>source));
-        <span class="kw">let </span>target = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>target));
+        <span class="kw">let </span>source = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>source));
+        <span class="kw">let </span>target = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>target));
 
-        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">&quot;COPY&quot;</span>).uri(<span class="kw-2">&amp;</span>source);
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">"COPY"</span>).uri(<span class="kw-2">&amp;</span>source);
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(auth) = <span class="kw-2">&amp;</span><span class="self">self</span>.authorization {
             req = req.header(header::AUTHORIZATION, auth);
         }
 
-        req = req.header(<span class="string">&quot;Destination&quot;</span>, target);
+        req = req.header(<span class="string">"Destination"</span>, target);
 
-        <span class="comment">// We always specific &quot;T&quot; for keeping to overwrite the destination.
-        </span>req = req.header(<span class="string">&quot;Overwrite&quot;</span>, <span class="string">&quot;T&quot;</span>);
+        <span class="comment">// We always specific "T" for keeping to overwrite the destination.
+        </span>req = req.header(<span class="string">"Overwrite"</span>, <span class="string">"T"</span>);
 
         <span class="kw">let </span>req = req
             .body(AsyncBody::Empty)
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
+        <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
     <span class="kw">async fn </span>webdav_move(<span class="kw-2">&amp;</span><span class="self">self</span>, from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Response&lt;IncomingAsyncBody&gt;&gt; {
         <span class="kw">let </span>source = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, from);
         <span class="kw">let </span>target = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, to);
 
-        <span class="kw">let </span>source = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>source));
-        <span class="kw">let </span>target = <span class="macro">format!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>target));
+        <span class="kw">let </span>source = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>source));
+        <span class="kw">let </span>target = <span class="macro">format!</span>(<span class="string">"{}/{}"</span>, <span class="self">self</span>.endpoint, percent_encode_path(<span class="kw-2">&amp;</span>target));
 
-        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">&quot;MOVE&quot;</span>).uri(<span class="kw-2">&amp;</span>source);
+        <span class="kw">let </span><span class="kw-2">mut </span>req = Request::builder().method(<span class="string">"MOVE"</span>).uri(<span class="kw-2">&amp;</span>source);
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(auth) = <span class="kw-2">&amp;</span><span class="self">self</span>.authorization {
             req = req.header(header::AUTHORIZATION, auth);
         }
 
-        req = req.header(<span class="string">&quot;Destination&quot;</span>, target);
+        req = req.header(<span class="string">"Destination"</span>, target);
 
-        <span class="comment">// We always specific &quot;T&quot; for keeping to overwrite the destination.
-        </span>req = req.header(<span class="string">&quot;Overwrite&quot;</span>, <span class="string">&quot;T&quot;</span>);
+        <span class="comment">// We always specific "T" for keeping to overwrite the destination.
+        </span>req = req.header(<span class="string">"Overwrite"</span>, <span class="string">"T"</span>);
 
         <span class="kw">let </span>req = req
             .body(AsyncBody::Empty)
             .map_err(new_request_build_error)<span class="question-mark">?</span>;
 
-        <span class="self">self</span>.client.send_async(req).<span class="kw">await
+        <span class="self">self</span>.client.send(req).<span class="kw">await
     </span>}
 
-    <span class="kw">async fn </span>create_internal(<span class="kw-2">&amp;</span><span class="self">self</span>, abs_path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
-        <span class="kw">let </span>resp = <span class="kw">if </span>abs_path.ends_with(<span class="string">&#39;/&#39;</span>) {
-            <span class="self">self</span>.webdav_mkcol(abs_path, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)
-                .<span class="kw">await</span><span class="question-mark">?
-        </span>} <span class="kw">else </span>{
-            <span class="self">self</span>.webdav_put(abs_path, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, AsyncBody::Empty)
-                .<span class="kw">await</span><span class="question-mark">?
-        </span>};
+    <span class="kw">async fn </span>create_dir_internal(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span>resp = <span class="self">self</span>.webdav_mkcol(path).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="kw">let </span>status = resp.status();
 
         <span class="kw">match </span>status {
             StatusCode::CREATED
-            | StatusCode::OK
-            <span class="comment">// `File exists` will return `Method Not Allowed`
-            </span>| StatusCode::METHOD_NOT_ALLOWED
-            <span class="comment">// create existing dir will return conflict
-            </span>| StatusCode::CONFLICT
-            <span class="comment">// create existing file will return no_content
-            </span>| StatusCode::NO_CONTENT =&gt; {
+            <span class="comment">// Allow multiple status
+            </span>| StatusCode::MULTI_STATUS
+            <span class="comment">// The MKCOL method can only be performed on a deleted or non-existent resource.
+            // This error means the directory already exists which is allowed by create_dir.
+            </span>| StatusCode::METHOD_NOT_ALLOWED =&gt; {
                 resp.into_body().consume().<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(RpCreate::default())
+                <span class="prelude-val">Ok</span>(())
             }
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
         }
     }
 
-    <span class="kw">async fn </span>ensure_parent_path(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="comment">// create dir recursively, split path by `/` and create each dir except the last one
-        </span><span class="kw">let </span>abs_path = build_abs_path(<span class="kw-2">&amp;</span><span class="self">self</span>.root, path);
-        <span class="kw">let </span>abs_path = abs_path.as_str();
-        <span class="kw">let </span><span class="kw-2">mut </span>parts: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = abs_path.split(<span class="string">&#39;/&#39;</span>).filter(|x| !x.is_empty()).collect();
-        <span class="kw">if </span>!parts.is_empty() {
-            parts.pop();
+    <span class="kw">async fn </span>ensure_parent_path(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>path: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>dirs = VecDeque::default();
+
+        <span class="kw">while </span>path != <span class="string">"/" </span>{
+            <span class="comment">// check path first.
+            </span><span class="kw">let </span>parent = get_parent(path);
+
+            <span class="kw">let </span><span class="kw-2">mut </span>header_map = HeaderMap::new();
+            <span class="comment">// not include children
+            </span>header_map.insert(<span class="string">"Depth"</span>, <span class="string">"0"</span>.parse().unwrap());
+            header_map.insert(header::ACCEPT, <span class="string">"application/xml"</span>.parse().unwrap());
+
+            <span class="kw">let </span>resp = <span class="self">self</span>.webdav_propfind(parent, <span class="prelude-val">Some</span>(header_map)).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">match </span>resp.status() {
+                StatusCode::OK | StatusCode::MULTI_STATUS =&gt; <span class="kw">break</span>,
+                StatusCode::NOT_FOUND =&gt; {
+                    dirs.push_front(parent);
+                    path = parent
+                }
+                <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(parse_error(resp).<span class="kw">await</span><span class="question-mark">?</span>),
+            }
         }
 
-        <span class="kw">let </span><span class="kw-2">mut </span>sub_path = String::new();
-        <span class="kw">for </span>sub_part <span class="kw">in </span>parts {
-            <span class="kw">let </span>sub_path_with_slash = sub_part.to_owned() + <span class="string">&quot;/&quot;</span>;
-            sub_path.push_str(<span class="kw-2">&amp;</span>sub_path_with_slash);
-            <span class="self">self</span>.create_internal(<span class="kw-2">&amp;</span>sub_path).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">for </span>dir <span class="kw">in </span>dirs {
+            <span class="self">self</span>.create_dir_internal(dir).<span class="kw">await</span><span class="question-mark">?</span>;
         }
-
         <span class="prelude-val">Ok</span>(())
     }
 }
-</code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.2 (9eb3afe9e 2023-03-27)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
+</code></pre></div></section></main></body></html>

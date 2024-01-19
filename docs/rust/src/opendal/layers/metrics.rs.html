@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/layers/metrics.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>metrics.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-93196c7a1c3542a8.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-3367e395607fafc1.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../opendal/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/layers/metrics.rs`."><title>metrics.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-4e54bb2b497cc83f.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0-nightly (25f8d01fd 2024-01-18)" data-channel="nightly" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0b2e2def73e61cbe.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../opendal/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -896,98 +898,19 @@
 <a href="#896" id="896">896</a>
 <a href="#897" id="897">897</a>
 <a href="#898" id="898">898</a>
-<a href="#899" id="899">899</a>
-<a href="#900" id="900">900</a>
-<a href="#901" id="901">901</a>
-<a href="#902" id="902">902</a>
-<a href="#903" id="903">903</a>
-<a href="#904" id="904">904</a>
-<a href="#905" id="905">905</a>
-<a href="#906" id="906">906</a>
-<a href="#907" id="907">907</a>
-<a href="#908" id="908">908</a>
-<a href="#909" id="909">909</a>
-<a href="#910" id="910">910</a>
-<a href="#911" id="911">911</a>
-<a href="#912" id="912">912</a>
-<a href="#913" id="913">913</a>
-<a href="#914" id="914">914</a>
-<a href="#915" id="915">915</a>
-<a href="#916" id="916">916</a>
-<a href="#917" id="917">917</a>
-<a href="#918" id="918">918</a>
-<a href="#919" id="919">919</a>
-<a href="#920" id="920">920</a>
-<a href="#921" id="921">921</a>
-<a href="#922" id="922">922</a>
-<a href="#923" id="923">923</a>
-<a href="#924" id="924">924</a>
-<a href="#925" id="925">925</a>
-<a href="#926" id="926">926</a>
-<a href="#927" id="927">927</a>
-<a href="#928" id="928">928</a>
-<a href="#929" id="929">929</a>
-<a href="#930" id="930">930</a>
-<a href="#931" id="931">931</a>
-<a href="#932" id="932">932</a>
-<a href="#933" id="933">933</a>
-<a href="#934" id="934">934</a>
-<a href="#935" id="935">935</a>
-<a href="#936" id="936">936</a>
-<a href="#937" id="937">937</a>
-<a href="#938" id="938">938</a>
-<a href="#939" id="939">939</a>
-<a href="#940" id="940">940</a>
-<a href="#941" id="941">941</a>
-<a href="#942" id="942">942</a>
-<a href="#943" id="943">943</a>
-<a href="#944" id="944">944</a>
-<a href="#945" id="945">945</a>
-<a href="#946" id="946">946</a>
-<a href="#947" id="947">947</a>
-<a href="#948" id="948">948</a>
-<a href="#949" id="949">949</a>
-<a href="#950" id="950">950</a>
-<a href="#951" id="951">951</a>
-<a href="#952" id="952">952</a>
-<a href="#953" id="953">953</a>
-<a href="#954" id="954">954</a>
-<a href="#955" id="955">955</a>
-<a href="#956" id="956">956</a>
-<a href="#957" id="957">957</a>
-<a href="#958" id="958">958</a>
-<a href="#959" id="959">959</a>
-<a href="#960" id="960">960</a>
-<a href="#961" id="961">961</a>
-<a href="#962" id="962">962</a>
-<a href="#963" id="963">963</a>
-<a href="#964" id="964">964</a>
-<a href="#965" id="965">965</a>
-<a href="#966" id="966">966</a>
-<a href="#967" id="967">967</a>
-<a href="#968" id="968">968</a>
-<a href="#969" id="969">969</a>
-<a href="#970" id="970">970</a>
-<a href="#971" id="971">971</a>
-<a href="#972" id="972">972</a>
-<a href="#973" id="973">973</a>
-<a href="#974" id="974">974</a>
-<a href="#975" id="975">975</a>
-<a href="#976" id="976">976</a>
-<a href="#977" id="977">977</a>
-</pre><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
+</pre></div><pre class="rust"><code><span class="comment">// Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
-// &quot;License&quot;); you may not use this file except in compliance
+// "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
 //   http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
-// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
@@ -1010,12 +933,11 @@
 <span class="kw">use </span>metrics::Counter;
 <span class="kw">use </span>metrics::Histogram;
 
-<span class="kw">use </span><span class="kw">crate</span>::ops::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::raw::<span class="kw-2">*</span>;
 <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// requests_total records all successful requests sent via operator.
-</span><span class="kw">static </span>METRIC_REQUESTS_TOTAL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;opendal_requests_total&quot;</span>;
+</span><span class="kw">static </span>METRIC_REQUESTS_TOTAL: <span class="kw-2">&amp;</span>str = <span class="string">"opendal_requests_total"</span>;
 <span class="doccomment">/// requests_duration_seconds records the duration seconds of successful
 /// requests.
 ///
@@ -1027,17 +949,17 @@
 /// - Sending request
 /// - Receiving response
 /// - Consuming response
-</span><span class="kw">static </span>METRIC_REQUESTS_DURATION_SECONDS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;opendal_requests_duration_seconds&quot;</span>;
-<span class="kw">static </span>METRICS_ERRORS_TOTAL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;opendal_errors_total&quot;</span>;
+</span><span class="kw">static </span>METRIC_REQUESTS_DURATION_SECONDS: <span class="kw-2">&amp;</span>str = <span class="string">"opendal_requests_duration_seconds"</span>;
+<span class="kw">static </span>METRICS_ERRORS_TOTAL: <span class="kw-2">&amp;</span>str = <span class="string">"opendal_errors_total"</span>;
 <span class="doccomment">/// bytes_total records all bytes processed by operator.
-</span><span class="kw">static </span>METRIC_BYTES_TOTAL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;opendal_bytes_total&quot;</span>;
+</span><span class="kw">static </span>METRIC_BYTES_TOTAL: <span class="kw-2">&amp;</span>str = <span class="string">"opendal_bytes_total"</span>;
 
 <span class="doccomment">/// The scheme of the service.
-</span><span class="kw">static </span>LABEL_SERVICE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;service&quot;</span>;
+</span><span class="kw">static </span>LABEL_SERVICE: <span class="kw-2">&amp;</span>str = <span class="string">"service"</span>;
 <span class="doccomment">/// The operation of this request.
-</span><span class="kw">static </span>LABEL_OPERATION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;operation&quot;</span>;
+</span><span class="kw">static </span>LABEL_OPERATION: <span class="kw-2">&amp;</span>str = <span class="string">"operation"</span>;
 <span class="doccomment">/// The error kind of this failed request.
-</span><span class="kw">static </span>LABEL_ERROR: <span class="kw-2">&amp;</span>str = <span class="string">&quot;error&quot;</span>;
+</span><span class="kw">static </span>LABEL_ERROR: <span class="kw-2">&amp;</span>str = <span class="string">"error"</span>;
 
 <span class="doccomment">/// Add [metrics](https://docs.rs/metrics/) for every operations.
 ///
@@ -1071,7 +993,7 @@
 /// use opendal::Operator;
 ///
 /// let _ = Operator::new(services::Memory::default())
-///     .expect(&quot;must init&quot;)
+///     .expect("must init")
 ///     .layer(MetricsLayer)
 ///     .finish();
 /// ```
@@ -1086,10 +1008,10 @@
 ///
 /// ```ignore
 /// let builder = PrometheusBuilder::new();
-/// builder.install().expect(&quot;failed to install recorder/exporter&quot;);
-/// let handle = builder.install_recorder().expect(&quot;failed to install recorder&quot;);
-/// let (recorder, exporter) = builder.build().expect(&quot;failed to build recorder/exporter&quot;);
-/// let recorder = builder.build_recorder().expect(&quot;failed to build recorder&quot;);
+/// builder.install().expect("failed to install recorder/exporter");
+/// let handle = builder.install_recorder().expect("failed to install recorder");
+/// let (recorder, exporter) = builder.build().expect("failed to build recorder/exporter");
+/// let recorder = builder.build_recorder().expect("failed to build recorder");
 /// ```
 </span><span class="attr">#[derive(Debug, Copy, Clone)]
 </span><span class="kw">pub struct </span>MetricsLayer;
@@ -1112,7 +1034,7 @@
 /// By holding all metrics handlers we needed, we can reduce the lock
 /// cost on fetching them. All metrics update will be atomic operations.
 </span><span class="kw">struct </span>MetricsHandler {
-    service: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    service: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
 
     requests_total_metadata: Counter,
     requests_duration_seconds_metadata: Histogram,
@@ -1136,9 +1058,6 @@
 
     requests_total_list: Counter,
     requests_duration_seconds_list: Histogram,
-
-    requests_total_scan: Counter,
-    requests_duration_seconds_scan: Histogram,
 
     requests_total_presign: Counter,
     requests_duration_seconds_presign: Histogram,
@@ -1166,13 +1085,10 @@
 
     requests_total_blocking_list: Counter,
     requests_duration_seconds_blocking_list: Histogram,
-
-    requests_total_blocking_scan: Counter,
-    requests_duration_seconds_blocking_scan: Histogram,
 }
 
 <span class="kw">impl </span>MetricsHandler {
-    <span class="kw">fn </span>new(service: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+    <span class="kw">fn </span>new(service: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             service,
 
@@ -1190,12 +1106,12 @@
             requests_total_create: <span class="macro">register_counter!</span>(
                 METRIC_REQUESTS_TOTAL,
                 LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::Create.into_static(),
+                LABEL_OPERATION =&gt; Operation::CreateDir.into_static(),
             ),
             requests_duration_seconds_create: <span class="macro">register_histogram!</span>(
                 METRIC_REQUESTS_DURATION_SECONDS,
                 LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::Create.into_static(),
+                LABEL_OPERATION =&gt; Operation::CreateDir.into_static(),
             ),
 
             requests_total_read: <span class="macro">register_counter!</span>(
@@ -1263,17 +1179,6 @@
                 LABEL_OPERATION =&gt; Operation::List.into_static(),
             ),
 
-            requests_total_scan: <span class="macro">register_counter!</span>(
-                METRIC_REQUESTS_TOTAL,
-                LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::Scan.into_static(),
-            ),
-            requests_duration_seconds_scan: <span class="macro">register_histogram!</span>(
-                METRIC_REQUESTS_DURATION_SECONDS,
-                LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::Scan.into_static(),
-            ),
-
             requests_total_presign: <span class="macro">register_counter!</span>(
                 METRIC_REQUESTS_TOTAL,
                 LABEL_SERVICE =&gt; service,
@@ -1299,12 +1204,12 @@
             requests_total_blocking_create: <span class="macro">register_counter!</span>(
                 METRIC_REQUESTS_TOTAL,
                 LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::BlockingCreate.into_static(),
+                LABEL_OPERATION =&gt; Operation::BlockingCreateDir.into_static(),
             ),
             requests_duration_seconds_blocking_create: <span class="macro">register_histogram!</span>(
                 METRIC_REQUESTS_DURATION_SECONDS,
                 LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::BlockingCreate.into_static(),
+                LABEL_OPERATION =&gt; Operation::BlockingCreateDir.into_static(),
             ),
 
             requests_total_blocking_read: <span class="macro">register_counter!</span>(
@@ -1371,17 +1276,6 @@
                 LABEL_SERVICE =&gt; service,
                 LABEL_OPERATION =&gt; Operation::BlockingList.into_static(),
             ),
-
-            requests_total_blocking_scan: <span class="macro">register_counter!</span>(
-                METRIC_REQUESTS_TOTAL,
-                LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::BlockingScan.into_static(),
-            ),
-            requests_duration_seconds_blocking_scan: <span class="macro">register_histogram!</span>(
-                METRIC_REQUESTS_DURATION_SECONDS,
-                LABEL_SERVICE =&gt; service,
-                LABEL_OPERATION =&gt; Operation::BlockingScan.into_static(),
-            ),
         }
     }
 
@@ -1404,22 +1298,23 @@
 }
 
 <span class="kw">impl</span>&lt;A: Accessor&gt; Debug <span class="kw">for </span>MetricsAccessor&lt;A&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
-        f.debug_struct(<span class="string">&quot;MetricsAccessor&quot;</span>)
-            .field(<span class="string">&quot;inner&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner)
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
+        f.debug_struct(<span class="string">"MetricsAccessor"</span>)
+            .field(<span class="string">"inner"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner)
             .finish_non_exhaustive()
     }
 }
 
-<span class="attr">#[async_trait]
+<span class="attr">#[cfg_attr(not(target_arch = <span class="string">"wasm32"</span>), async_trait)]
+#[cfg_attr(target_arch = <span class="string">"wasm32"</span>, async_trait(<span class="question-mark">?</span>Send))]
 </span><span class="kw">impl</span>&lt;A: Accessor&gt; LayeredAccessor <span class="kw">for </span>MetricsAccessor&lt;A&gt; {
     <span class="kw">type </span>Inner = A;
     <span class="kw">type </span>Reader = MetricWrapper&lt;A::Reader&gt;;
     <span class="kw">type </span>BlockingReader = MetricWrapper&lt;A::BlockingReader&gt;;
     <span class="kw">type </span>Writer = MetricWrapper&lt;A::Writer&gt;;
     <span class="kw">type </span>BlockingWriter = MetricWrapper&lt;A::BlockingWriter&gt;;
-    <span class="kw">type </span>Pager = A::Pager;
-    <span class="kw">type </span>BlockingPager = A::BlockingPager;
+    <span class="kw">type </span>Lister = A::Lister;
+    <span class="kw">type </span>BlockingLister = A::BlockingLister;
 
     <span class="kw">fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Inner {
         <span class="kw-2">&amp;</span><span class="self">self</span>.inner
@@ -1437,13 +1332,13 @@
         result
     }
 
-    <span class="kw">async fn </span>create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
+    <span class="kw">async fn </span>create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="self">self</span>.handle.requests_total_create.increment(<span class="number">1</span>);
 
         <span class="kw">let </span>start = Instant::now();
 
         <span class="self">self</span>.inner
-            .create(path, args)
+            .create_dir(path, args)
             .map(|v| {
                 <span class="kw">let </span>dur = start.elapsed().as_secs_f64();
 
@@ -1451,7 +1346,7 @@
 
                 v.map_err(|e| {
                     <span class="self">self</span>.handle
-                        .increment_errors_total(Operation::Create, e.kind());
+                        .increment_errors_total(Operation::CreateDir, e.kind());
                     e
                 })
             })
@@ -1553,7 +1448,7 @@
             .<span class="kw">await
     </span>}
 
-    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Pager)&gt; {
+    <span class="kw">async fn </span>list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::Lister)&gt; {
         <span class="self">self</span>.handle.requests_total_list.increment(<span class="number">1</span>);
 
         <span class="kw">let </span>start = Instant::now();
@@ -1568,25 +1463,6 @@
             .inspect_err(|e| {
                 <span class="self">self</span>.handle
                     .increment_errors_total(Operation::List, e.kind());
-            })
-            .<span class="kw">await
-    </span>}
-
-    <span class="kw">async fn </span>scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpScan) -&gt; <span class="prelude-ty">Result</span>&lt;(RpScan, <span class="self">Self</span>::Pager)&gt; {
-        <span class="self">self</span>.handle.requests_total_scan.increment(<span class="number">1</span>);
-
-        <span class="kw">let </span>start = Instant::now();
-
-        <span class="self">self</span>.inner
-            .scan(path, args)
-            .inspect_ok(|<span class="kw">_</span>| {
-                <span class="kw">let </span>dur = start.elapsed().as_secs_f64();
-
-                <span class="self">self</span>.handle.requests_duration_seconds_scan.record(dur);
-            })
-            .inspect_err(|e| {
-                <span class="self">self</span>.handle
-                    .increment_errors_total(Operation::Scan, e.kind());
             })
             .<span class="kw">await
     </span>}
@@ -1607,11 +1483,11 @@
         })
     }
 
-    <span class="kw">fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
+    <span class="kw">async fn </span>presign(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpPresign) -&gt; <span class="prelude-ty">Result</span>&lt;RpPresign&gt; {
         <span class="self">self</span>.handle.requests_total_presign.increment(<span class="number">1</span>);
 
         <span class="kw">let </span>start = Instant::now();
-        <span class="kw">let </span>result = <span class="self">self</span>.inner.presign(path, args);
+        <span class="kw">let </span>result = <span class="self">self</span>.inner.presign(path, args).<span class="kw">await</span>;
         <span class="kw">let </span>dur = start.elapsed().as_secs_f64();
 
         <span class="self">self</span>.handle.requests_duration_seconds_presign.record(dur);
@@ -1623,11 +1499,11 @@
         })
     }
 
-    <span class="kw">fn </span>blocking_create(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreate) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreate&gt; {
+    <span class="kw">fn </span>blocking_create_dir(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpCreateDir) -&gt; <span class="prelude-ty">Result</span>&lt;RpCreateDir&gt; {
         <span class="self">self</span>.handle.requests_total_blocking_create.increment(<span class="number">1</span>);
 
         <span class="kw">let </span>start = Instant::now();
-        <span class="kw">let </span>result = <span class="self">self</span>.inner.blocking_create(path, args);
+        <span class="kw">let </span>result = <span class="self">self</span>.inner.blocking_create_dir(path, args);
         <span class="kw">let </span>dur = start.elapsed().as_secs_f64();
 
         <span class="self">self</span>.handle
@@ -1636,7 +1512,7 @@
 
         result.map_err(|e| {
             <span class="self">self</span>.handle
-                .increment_errors_total(Operation::BlockingCreate, e.kind());
+                .increment_errors_total(Operation::BlockingCreateDir, e.kind());
             e
         })
     }
@@ -1734,7 +1610,7 @@
         })
     }
 
-    <span class="kw">fn </span>blocking_list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::BlockingPager)&gt; {
+    <span class="kw">fn </span>blocking_list(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpList) -&gt; <span class="prelude-ty">Result</span>&lt;(RpList, <span class="self">Self</span>::BlockingLister)&gt; {
         <span class="self">self</span>.handle.requests_total_blocking_list.increment(<span class="number">1</span>);
 
         <span class="kw">let </span>start = Instant::now();
@@ -1748,24 +1624,6 @@
         result.map_err(|e| {
             <span class="self">self</span>.handle
                 .increment_errors_total(Operation::BlockingList, e.kind());
-            e
-        })
-    }
-
-    <span class="kw">fn </span>blocking_scan(<span class="kw-2">&amp;</span><span class="self">self</span>, path: <span class="kw-2">&amp;</span>str, args: OpScan) -&gt; <span class="prelude-ty">Result</span>&lt;(RpScan, <span class="self">Self</span>::BlockingPager)&gt; {
-        <span class="self">self</span>.handle.requests_total_blocking_scan.increment(<span class="number">1</span>);
-
-        <span class="kw">let </span>start = Instant::now();
-        <span class="kw">let </span>result = <span class="self">self</span>.inner.blocking_scan(path, args);
-        <span class="kw">let </span>dur = start.elapsed().as_secs_f64();
-
-        <span class="self">self</span>.handle
-            .requests_duration_seconds_blocking_scan
-            .record(dur);
-
-        result.map_err(|e| {
-            <span class="self">self</span>.handle
-                .increment_errors_total(Operation::BlockingScan, e.kind());
             e
         })
     }
@@ -1815,7 +1673,7 @@
 }
 
 <span class="kw">impl</span>&lt;R: oio::Read&gt; oio::Read <span class="kw">for </span>MetricWrapper&lt;R&gt; {
-    <span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
+    <span class="kw">fn </span>poll_read(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>[u8]) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="self">self</span>.inner.poll_read(cx, buf).map(|res| <span class="kw">match </span>res {
             <span class="prelude-val">Ok</span>(bytes) =&gt; {
                 <span class="self">self</span>.bytes += bytes <span class="kw">as </span>u64;
@@ -1828,7 +1686,7 @@
         })
     }
 
-    <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;, pos: io::SeekFrom) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;u64&gt;&gt; {
+    <span class="kw">fn </span>poll_seek(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, pos: io::SeekFrom) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;u64&gt;&gt; {
         <span class="self">self</span>.inner.poll_seek(cx, pos).map(|res| <span class="kw">match </span>res {
             <span class="prelude-val">Ok</span>(n) =&gt; <span class="prelude-val">Ok</span>(n),
             <span class="prelude-val">Err</span>(e) =&gt; {
@@ -1838,7 +1696,7 @@
         })
     }
 
-    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
+    <span class="kw">fn </span>poll_next(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;Bytes&gt;&gt;&gt; {
         <span class="self">self</span>.inner.poll_next(cx).map(|res| <span class="kw">match </span>res {
             <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(bytes)) =&gt; {
                 <span class="self">self</span>.bytes += bytes.len() <span class="kw">as </span>u64;
@@ -1888,34 +1746,29 @@
     }
 }
 
-<span class="attr">#[async_trait]
-</span><span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>MetricWrapper&lt;R&gt; {
-    <span class="kw">async fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
+<span class="kw">impl</span>&lt;R: oio::Write&gt; oio::Write <span class="kw">for </span>MetricWrapper&lt;R&gt; {
+    <span class="kw">fn </span>poll_write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;usize&gt;&gt; {
         <span class="self">self</span>.inner
-            .write(bs)
-            .<span class="kw">await
-            </span>.map(|<span class="kw">_</span>| <span class="self">self</span>.bytes += size <span class="kw">as </span>u64)
+            .poll_write(cx, bs)
+            .map_ok(|n| {
+                <span class="self">self</span>.bytes += n <span class="kw">as </span>u64;
+                n
+            })
             .map_err(|err| {
                 <span class="self">self</span>.handle.increment_errors_total(<span class="self">self</span>.op, err.kind());
                 err
             })
     }
 
-    <span class="kw">async fn </span>append(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
-        <span class="self">self</span>.inner
-            .append(bs)
-            .<span class="kw">await
-            </span>.map(|<span class="kw">_</span>| <span class="self">self</span>.bytes += size <span class="kw">as </span>u64)
-            .map_err(|err| {
-                <span class="self">self</span>.handle.increment_errors_total(<span class="self">self</span>.op, err.kind());
-                err
-            })
+    <span class="kw">fn </span>poll_abort(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_abort(cx).map_err(|err| {
+            <span class="self">self</span>.handle.increment_errors_total(<span class="self">self</span>.op, err.kind());
+            err
+        })
     }
 
-    <span class="kw">async fn </span>close(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="self">self</span>.inner.close().<span class="kw">await</span>.map_err(|err| {
+    <span class="kw">fn </span>poll_close(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;()&gt;&gt; {
+        <span class="self">self</span>.inner.poll_close(cx).map_err(|err| {
             <span class="self">self</span>.handle.increment_errors_total(<span class="self">self</span>.op, err.kind());
             err
         })
@@ -1923,22 +1776,13 @@
 }
 
 <span class="kw">impl</span>&lt;R: oio::BlockingWrite&gt; oio::BlockingWrite <span class="kw">for </span>MetricWrapper&lt;R&gt; {
-    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: <span class="kw-2">&amp;</span><span class="kw">dyn </span>oio::WriteBuf) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
         <span class="self">self</span>.inner
             .write(bs)
-            .map(|<span class="kw">_</span>| <span class="self">self</span>.bytes += size <span class="kw">as </span>u64)
-            .map_err(|err| {
-                <span class="self">self</span>.handle.increment_errors_total(<span class="self">self</span>.op, err.kind());
-                err
+            .map(|n| {
+                <span class="self">self</span>.bytes += n <span class="kw">as </span>u64;
+                n
             })
-    }
-
-    <span class="kw">fn </span>append(<span class="kw-2">&amp;mut </span><span class="self">self</span>, bs: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>size = bs.len();
-        <span class="self">self</span>.inner
-            .append(bs)
-            .map(|<span class="kw">_</span>| <span class="self">self</span>.bytes += size <span class="kw">as </span>u64)
             .map_err(|err| {
                 <span class="self">self</span>.handle.increment_errors_total(<span class="self">self</span>.op, err.kind());
                 err
@@ -1952,5 +1796,4 @@
         })
     }
 }
-</code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="opendal" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.2 (9eb3afe9e 2023-03-27)" data-search-js="search-98d53477a794af0b.js" data-settings-js="settings-c3c521c753752a1a.js" data-settings-css="settings-08ddfdda51b8ee2e.css" ></div></body></html>
+</code></pre></div></section></main></body></html>
